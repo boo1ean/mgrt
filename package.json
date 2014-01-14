@@ -1,7 +1,7 @@
 {
   "name": "mgrt",
   "version": "0.0.0",
-  "description": "Not just database migrations tool",
+  "description": "Not just database migration tool",
   "main": "index.js",
   "scripts": {
     "test": "make test"
@@ -16,5 +16,9 @@
   "devDependencies": {
     "should": "~2.1.1",
     "mocha": "~1.17.0"
+  },
+  "dependencies": {
+    "commander": "~2.1.0",
+    "mkdirp": "~0.3.5"
   }
 }
