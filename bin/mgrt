@@ -6,29 +6,41 @@ var program = require('commander'),
 program
 	.version(require('../package').version);
 
-var migrate = function(direction) {
-	return function(context, options) {
-		var path = context.path || DEFAULT_PATH;
-
-		var env = {
-			path: path
-		}
-
-		var mgrt = new Mgrt(env);
-		mgrt.run(direction);
+var mgrt = function(context) {
+	var path = context.path || DEFAULT_PATH;
+	var env = {
+		path: path
 	}
+
+	return new Mgrt(env);
 }
+
+var craee
 
 program
 	.command('up')
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.description('Apply pending migrations')
-	.action(migrate('up'));
+	.action(function(context) {
+		mgrt(context).run('up');
+	});
 
 program
 	.command('down')
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.description('Rollback applied migrations')
-	.action(migrate('down'));
+	.action(function(context) {
+		mgrt(context).run('down');
+	});
+
+program
+	.command('create <name>')
+	.option('-p, --path <path>', 'Path to migrations base directory')
+	.description('Create new migration')
+	.action(function(name, context) {
+		if ('string' === typeof name && name.length) {
+			mgrt(context).create(name);
+		}
+	});
 
 program.parse(process.argv);
