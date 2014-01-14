@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 var program = require('commander'),
     Mgrt = require('../lib/mgrt'),
-    DEFAULT_PATH = 'migrations';
+    DEFAULT_PATH = 'migrations',
+    DEFAULT_TEMPLATE_PATH = __dirname + '/../lib/template/default.js';
 
 program
 	.version(require('../package').version);
@@ -36,10 +37,12 @@ program
 program
 	.command('create <name>')
 	.option('-p, --path <path>', 'Path to migrations base directory')
+	.option('-t, --template <path>', 'Path to migration template')
 	.description('Create new migration')
 	.action(function(name, context) {
 		if ('string' === typeof name && name.length) {
-			mgrt(context).create(name);
+			var templatePath = context.template || DEFAULT_TEMPLATE_PATH;
+			mgrt(context).create(name, templatePath);
 		}
 	});
 
