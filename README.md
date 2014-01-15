@@ -122,6 +122,8 @@ If you want reverse all applied migration and migrate them back just:
 	mgrt refresh
 
 # Soon...
+	- Errors handling
+	- Custom migration templates
 	- Configuration
 	- DB storage for applied migrations data
 	- Custom migrations type support
