@@ -9,7 +9,7 @@ describe('Migrator', function() {
 		var completions = 0;
 		var expectedCompletions = 2;
 
-		migrator.on('complete', function() {
+		migrator.on('nop', function() {
 			++completions;
 		});
 
@@ -22,14 +22,14 @@ describe('Migrator', function() {
 	it('Should fire migrate event on migration', function() {
 		var title = 'such title',
 		    counter = 0,
-		    expectedCount = 6,
+		    expectedCount = 10,
 		    cb = function(next) { ++counter; next(); },
 		    migration = new Migration(title, cb, cb),
 		    migrator = new Migrator([migration, migration]);
 
 		migrator.on('migration', function(migration) {
 			++counter;
-			migration.title.should.be.equal(title);
+			migration.name.should.be.equal(title);
 		});
 
 		migrator.on('complete', function() {
