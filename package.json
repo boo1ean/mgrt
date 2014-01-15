@@ -1,6 +1,6 @@
 {
 	"name": "mgrt",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Not just database migration tool",
 	"repository": "boo1ean/mgrt",
 	"homepage": "https://github.com/boo1ean/mgrt",

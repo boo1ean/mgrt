@@ -21,7 +21,7 @@ program
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.description('Apply pending migrations')
 	.action(function(context) {
-		mgrt(context).run('up');
+		mgrt(context).on('complete', process.exit).run('up');
 	});
 
 program
@@ -29,7 +29,7 @@ program
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.description('Rollback applied migrations')
 	.action(function(context) {
-		mgrt(context).run('down');
+		mgrt(context).on('complete', process.exit).run('down');
 	});
 
 program
@@ -43,6 +43,8 @@ program
 			if ('down' === direction) {
 				console.log('\n---\n');
 				m.run('up');
+			} else {
+				process.exit();
 			}
 		}
 
