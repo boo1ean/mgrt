@@ -33,6 +33,26 @@ program
 	});
 
 program
+	.command('refresh')
+	.option('-p, --path <path>', 'Path to migrations base directory')
+	.description('Down and up migrations')
+	.action(function(context) {
+		var m = mgrt(context);
+
+		var up = function(direction) {
+			if ('down' === direction) {
+				console.log('\n---\n');
+				m.run('up');
+			}
+		}
+
+		m.on('complete', up);
+		m.on('nop', up);
+
+		m.run('down');
+	});
+
+program
 	.command('create <name>')
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.option('-t, --template <path>', 'Path to migration template')
