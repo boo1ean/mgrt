@@ -115,6 +115,12 @@ exports.down = function(next){
 };
 ```
 
+## Rerun migrations
+
+If you want reverse all applied migration and migrate them back just:
+
+	mgrt refresh
+
 # Soon...
 	- Configuration
 	- DB storage for applied migrations data
