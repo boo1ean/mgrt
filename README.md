@@ -57,12 +57,12 @@ var db = require('./your-sql-db-adapter');
 
 exports.up = function(next){
 	// Raw sql create table query
-	var query = "                      \
-		create table users             \
-		id bigserial primary key,      \
-		email varchar(255) not null,   \
-		password varchar(255) not null \
-		UNIQUE(email)                  \
+	var query = "                       \
+		create table users              \
+		id bigserial primary key,       \
+		email varchar(255) not null,    \
+		password varchar(255) not null, \
+		UNIQUE(email)                   \
 	";
 
 	// Assuming db adapter is connected and provides sync query execution
