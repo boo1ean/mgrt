@@ -16,8 +16,6 @@ var mgrt = function(context) {
 	return new Mgrt(env);
 }
 
-var craee
-
 program
 	.command('up')
 	.option('-p, --path <path>', 'Path to migrations base directory')
