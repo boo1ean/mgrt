@@ -1,4 +1,4 @@
-# mgrt
+# mgrt [![Build Status](https://travis-ci.org/boo1ean/mgrt.png?branch=master)](https://travis-ci.org/boo1ean/mgrt)
 
   Node just database migration tool
 
