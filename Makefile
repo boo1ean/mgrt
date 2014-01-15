@@ -1,4 +1,4 @@
 test:
-	./node_modules/mocha/bin/_mocha -R spec test --recursive
+	./node_modules/mocha/bin/_mocha -R spec -r should test --recursive
 
 .PHONY: test

@@ -1,6 +1,5 @@
 var Migrator = require('../lib/migrator'),
-    Migration = require('../lib/migration'),
-    should    = require('should');
+    Migration = require('../lib/migration');
 
 describe('Migrator', function() {
 
