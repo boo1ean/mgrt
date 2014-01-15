@@ -43,7 +43,7 @@ exports.down = function(next) {
 ```
 You need to populate up and down functions with some useful stuff and invoke `next()` when job is done.
 
-## Example
+## Migration examples
 
 Create migration:
 
@@ -87,5 +87,36 @@ now run migration:
 it should produce output:
 
 	Migration started up
-	Successfully reversed: 1389782358593-create-users-table.js
+	Successfully migrated: 1389782358593-create-users-table.js
 	Migration completed up
+
+and reverse the migration:
+
+	mgrt down
+	Migration started down
+	Successfully reversed: 1389782358593-create-users-table.js
+	Migration completed down
+
+### Async migration
+
+```js
+var db = require('./your-promise-based-sql-db-adapter');
+
+exports.up = function(next){
+	var query = "..."
+
+	// Just execute next when promise is resolved
+	db.query(query).done(next);
+};
+
+exports.down = function(next){
+	var query = "..."
+	db.query(query).done(next);
+};
+```
+
+# Soon...
+	- Configuration
+	- DB storage for applied migrations data
+	- Custom migrations type support
+	- Namespaces
