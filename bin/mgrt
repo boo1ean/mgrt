@@ -23,7 +23,10 @@ program
 	.option('-n, --nosave', 'Do not save migrations data to storage')
 	.description('Apply pending migrations')
 	.action(function(context) {
-		mgrt(context).on('complete', process.exit).run('up', context);
+		mgrt(context)
+			.on('complete', process.exit)
+			.on('error', process.exit)
+			.run('up', context);
 	});
 
 program
@@ -33,7 +36,10 @@ program
 	.option('-n, --nosave', 'Do not save migrations data to storage')
 	.description('Rollback applied migrations')
 	.action(function(context) {
-		mgrt(context).on('complete', process.exit).run('down', context);
+		mgrt(context)
+			.on('complete', process.exit)
+			.on('error', process.exit)
+			.run('down', context);
 	});
 
 program
@@ -54,6 +60,7 @@ program
 			}
 		}
 
+		m.on('error', process.exit);
 		m.on('complete', up);
 		m.on('nop', up);
 
