@@ -19,22 +19,28 @@ var mgrt = function(context) {
 program
 	.command('up')
 	.option('-p, --path <path>', 'Path to migrations base directory')
+	.option('-f, --force', 'Force up all migrations', false)
+	.option('-n, --nosave', 'Do not save migrations data to storage')
 	.description('Apply pending migrations')
 	.action(function(context) {
-		mgrt(context).on('complete', process.exit).run('up');
+		mgrt(context).on('complete', process.exit).run('up', context);
 	});
 
 program
 	.command('down')
 	.option('-p, --path <path>', 'Path to migrations base directory')
+	.option('-f, --force', 'Force down all migrations', false)
+	.option('-n, --nosave', 'Do not save migrations data to storage')
 	.description('Rollback applied migrations')
 	.action(function(context) {
-		mgrt(context).on('complete', process.exit).run('down');
+		mgrt(context).on('complete', process.exit).run('down', context);
 	});
 
 program
 	.command('refresh')
 	.option('-p, --path <path>', 'Path to migrations base directory')
+	.option('-f, --force', 'Force down all migrations')
+	.option('-n, --nosave', 'Do not save migrations data to storage')
 	.description('Down and up migrations')
 	.action(function(context) {
 		var m = mgrt(context);
@@ -42,7 +48,7 @@ program
 		var up = function(direction) {
 			if ('down' === direction) {
 				console.log('\n---\n');
-				m.run('up');
+				m.run('up', context);
 			} else {
 				process.exit();
 			}
@@ -51,7 +57,7 @@ program
 		m.on('complete', up);
 		m.on('nop', up);
 
-		m.run('down');
+		m.run('down', context);
 	});
 
 program

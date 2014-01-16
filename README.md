@@ -135,6 +135,10 @@ If you want reverse all applied migration and migrate them back just:
 
 	mgrt refresh
 
+## Force up/down all migrations without marking them as completed/reversed
+
+	mgrt up --force --nosave
+
 # Soon...
 	- Custom migration templates
 	- Configuration
