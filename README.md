@@ -33,15 +33,18 @@ To create a new migration, run the following command:
 It will generate new timestamped file under migrations directory (defaults to `./migrations`)
 
 ```javascript
-exports.up = function(next) {
-	next();
+exports.up = function(success, error) {
+	error('Please populate migration');
 };
 
-exports.down = function(next) {
-	next();
+exports.down = function(success, error) {
+	error('Please populate migration');
 };
 ```
-You need to populate up and down functions with some useful stuff and invoke `next()` when job is done.
+
+You need to populate up and down functions with some useful stuff and invoke `success()` when migration is done and everything is ok.
+If some error occurred you should invoke `error()` callback passing (optional) error reason for additional info (e.g. error message string).
+Example of migration error handling is below.
 
 ## Migration examples
 
@@ -55,7 +58,7 @@ Now we can populate it:
 ```js
 var db = require('./your-sql-db-adapter');
 
-exports.up = function(next){
+exports.up = function(success, error) {
 	// Raw sql create table query
 	var query = "                       \
 		create table users              \
@@ -66,17 +69,28 @@ exports.up = function(next){
 	";
 
 	// Assuming db adapter is connected and provides sync query execution
-	db.query(query);
-	next();
+
+	try {
+		db.query(query);
+		success();
+	} catch (reason) {
+		// Will stop migrations chain and exit with error message
+		error(reason);
+	}
 };
 
-exports.down = function(next){
+exports.down = function(success, error) {
 	var query = "        \
 		drop table users \
 	";
 
-	db.query(query);
-	next();
+	try {
+		db.query(query);
+		success();
+	} catch (reason) {
+		// You may not pass reason argumen to error, it will stilltra
+		error();
+	}
 };
 ```
 
@@ -84,7 +98,7 @@ now run migration:
 
 	mgrt up
 
-it should produce output:
+it should produce output if there are no errors:
 
 	Migration started up
 	Successfully migrated: 1389782358593-create-users-table.js
@@ -102,16 +116,16 @@ and reverse the migration:
 ```js
 var db = require('./your-promise-based-sql-db-adapter');
 
-exports.up = function(next){
+exports.up = function(success, error) {
 	var query = "..."
 
-	// Just execute next when promise is resolved
-	db.query(query).done(next);
+	// Assign success and error callbacks for resolve and reject respectively
+	db.query(query).done(success, error);
 };
 
-exports.down = function(next){
+exports.down = function(success, error) {
 	var query = "..."
-	db.query(query).done(next);
+	db.query(query).done(success, error);
 };
 ```
 
@@ -122,7 +136,6 @@ If you want reverse all applied migration and migrate them back just:
 	mgrt refresh
 
 # Soon...
-	- Errors handling
 	- Custom migration templates
 	- Configuration
 	- DB storage for applied migrations data
