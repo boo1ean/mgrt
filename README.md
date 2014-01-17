@@ -146,6 +146,7 @@ If you want reverse all applied migration and migrate them back just:
 - Custom migrations type support
 - Namespaces
 
+# License
 
 The MIT License (MIT)
 Copyright (c) 2014 Egor Gumenyuk <boo1ean0807@gmail.com>
