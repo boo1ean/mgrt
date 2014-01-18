@@ -29,4 +29,24 @@ describe('Mgrt facade', function() {
 		mdl1.should.have.been.calledOn(mgrt.env);
 		mdl2.should.have.been.calledOn(mgrt.env);
 	});
+
+	it('Should apply middleware and call ward', function() {
+		var mgrt = new Mgrt({}),
+		    setupSpy = sinon.spy(),
+		    wardSpy, md1;
+
+		wardSpy = sinon.spy(function(next) {
+			next();
+		});
+
+		mdl1 = sinon.spy(function(next) {
+			this.wards.push(wardSpy);
+		});
+
+		mgrt.use(mdl1);
+		mgrt.setup(setupSpy);
+
+		wardSpy.should.have.been.calledOn(mgrt.env);
+		setupSpy.should.have.been.calledOn(mgrt);
+	});
 });
