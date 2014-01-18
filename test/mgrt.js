@@ -49,4 +49,23 @@ describe('Mgrt facade', function() {
 		wardSpy.should.have.been.calledOn(mgrt.env);
 		setupSpy.should.have.been.calledOn(mgrt);
 	});
+
+	it('Should yield sequance of middlewares', function() {
+		var mgrt = new Mgrt({}),
+		    setupSpy = sinon.spy(),
+		    spy = sinon.spy(function(next) {
+				next();
+			});
+
+		mgrt.use(function() {
+			this.wards = [spy, spy, spy];
+		});
+
+		mgrt.setup(setupSpy);
+
+		setupSpy.should.have.been.calledOn(mgrt);
+		setupSpy.should.have.been.calledOnce;
+		spy.should.have.been.calledThrice;
+		spy.should.have.been.calledOn(mgrt.env);
+	});
 });
