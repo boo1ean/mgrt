@@ -1,4 +1,9 @@
 var Registry = require('../lib/registry'),
+    fs = require('fs'),
+    unlink = fs.unlinkSync,
+    read = fs.readFileSync,
+    exists = fs.existsSync,
+    join = require('path').join,
     chai = require('chai'),
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
@@ -7,8 +12,10 @@ var Registry = require('../lib/registry'),
 chai.use(sinonChai);
 
 describe('Registry', function() {
-	var env, registry, storage, migrations, 
+	var env, registry, storage, migrations, path,
 	availableMigrations, completedMigrations, notCompletedMigrations;
+
+	path = __dirname + '/migrations';
 
 	availableMigrations = [
 		'1390047616649-such-migration.js',
@@ -36,7 +43,7 @@ describe('Registry', function() {
 	};
 
 	env = {
-		path: __dirname + '/migrations',
+		path: path,
 		storage: storage
 	};
 
@@ -95,5 +102,18 @@ describe('Registry', function() {
 		var spy = sinon.spy();
 		registry.updateCompletedMigrations('down', completedMigrations, spy);
 		spy.should.have.been.calledWith('[]');
+	});
+
+	it('Should copy file from one path to another', function() {
+		var name = 'very name',
+		    template = __dirname + '/../lib/template/default.js',
+		    templateContent = read(template).toString(),
+		    migration;
+
+		migration = registry.create(name, template);
+		migration.should.contain(name);
+		read(migration).toString().should.be.equal(templateContent);
+		unlink(migration);
+		exists(migration).should.not.be.ok;
 	});
 });
