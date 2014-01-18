@@ -7,13 +7,27 @@ var Registry = require('../lib/registry'),
 chai.use(sinonChai);
 
 describe('Registry', function() {
-	var env, registry, storage, migrations;
+	var env, registry, storage, migrations, 
+	availableMigrations, completedMigrations, notCompletedMigrations;
 
-	migrations = [1,2,3];
+	availableMigrations = [
+		'1390047616649-such-migration.js',
+		'1390047623625-many-steps.js',
+		'1390047653908-so-sequential.js'
+	];
+
+	notCompletedMigrations = [
+		'1390047623625-many-steps.js',
+		'1390047653908-so-sequential.js'
+	];
+
+	completedMigrations = [
+		'1390047616649-such-migration.js'
+	];
 
 	storage = {
 		get: function(cb) {
-			cb(JSON.stringify(migrations));
+			cb(JSON.stringify(completedMigrations));
 		},
 
 		set: function(value, cb) {
@@ -32,7 +46,7 @@ describe('Registry', function() {
 		var spy = sinon.spy();
 
 		registry.getCompletedMigrations(spy);
-		spy.should.have.been.calledWith(migrations);
+		spy.should.have.been.calledWith(completedMigrations);
 	});
 
 	it('Should put list of completed migrations to storage', function() {
@@ -45,13 +59,21 @@ describe('Registry', function() {
 	});
 
 	it('Should return list of available migrations', function() {
-		var expectedMigrations = [
-			'1390047616649-such-migration.js',
-			'1390047623625-many-steps.js',
-			'1390047653908-so-sequential.js'
-		];
-
 		var migrations = registry.getAvailableMigrations();
-		migrations.should.have.members(expectedMigrations);
+		migrations.should.have.members(availableMigrations);
+	});
+
+	it('Should return list of pending migrations for up direction', function() {
+		registry.getPendingMigrations('up', function(migrations) {
+			migrations.should.have.members(notCompletedMigrations);
+			migrations.should.not.have.members(completedMigrations);
+		});
+	});
+
+	it('Should return list of pending migrations for down direction', function() {
+		registry.getPendingMigrations('down', function(migrations) {
+			migrations.should.have.members(completedMigrations);
+			migrations.should.not.have.members(notCompletedMigrations);
+		});
 	});
 });
