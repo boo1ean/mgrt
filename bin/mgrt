@@ -11,11 +11,35 @@ program
 
 var mgrt = function(context) {
 	var path = context.path || DEFAULT_PATH;
+
 	var env = {
 		path: path
 	}
 
+	var verbs = {
+		up: 'migrate',
+		down: 'reverse'
+	}
+
 	return new Mgrt(env)
+		.on('nop', function(direction) {
+			console.log(('Nothing to ' + verbs[direction]).red);
+		})
+		.on('start', function(direction) {
+			console.log('Migration started '.blue + direction.red);
+		})
+		.on('migration', function(migration, direction) {
+			console.log(('Successfully ' + verbs[direction] + 'd: ').green + migration.name);
+		})
+		.on('error', function() {
+			console.log('Error occurred during migration: '.red + migration.name);
+			if (reason) {
+				console.log(reason);
+			}
+		})
+		.on('create', function(migration) {
+			console.log('Successfully created migration: '.green + migration);
+		})
 		.use(migrations)
 		.use(fileStorage);
 }
