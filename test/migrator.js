@@ -1,22 +1,25 @@
 var Migrator = require('../lib/migrator'),
-	should = require('chai').should(),
-    Migration = require('../lib/migration');
+    Migration = require('../lib/migration'),
+    chai = require('chai'),
+    sinon = require('sinon'),
+    sinonChai = require('sinon-chai'),
+    should = chai.should();
+
+chai.use(sinonChai);
 
 describe('Migrator', function() {
 
 	it('Should fire complete event when there are no pending migrations', function() {
 		var migrator = new Migrator([]);
-		var completions = 0;
 		var expectedCompletions = 2;
+		var spy = sinon.spy();
 
-		migrator.on('nop', function() {
-			++completions;
-		});
+		migrator.on('nop', spy);
 
 		migrator.up();
 		migrator.down();
 
-		completions.should.be.equal(expectedCompletions);
+		spy.should.have.been.calledTwice;
 	});
 
 	it('Should fire migrate event on migration', function() {
@@ -42,4 +45,36 @@ describe('Migrator', function() {
 		counter.should.be.equal(expectedCount);
 	});
 
+	it('Should fire error event with given message', function() {
+		var upmessage = 'very important',
+		    downmessage = 'very down message',
+		    name = 'really name',
+		    up, down, migration, migrator, counter = 0, expectedCount = 2;
+
+		up = function(success, error) {
+			error(upmessage);
+		};
+
+		down = function(success, error) {
+			error(downmessage);
+		};
+
+		migration = new Migration(name, up, down);
+		migrator = new Migrator([migration]);
+
+		migrator.on('error', function(migration, direction, reason) {
+			counter += 1;
+			migration.name.should.be.equal(name);
+			if ('up' === direction) {
+				reason.should.be.equal(upmessage);
+			} else {
+				reason.should.be.equal(downmessage);
+			}
+		});
+
+		migrator.migrate('up');
+		migrator.migrate('down');
+
+		counter.should.be.equal(expectedCount);
+	})
 });
