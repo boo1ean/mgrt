@@ -1,6 +1,6 @@
 {
 	"name": "mgrt",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"description": "Database migration tool for node.js",
 	"repository": "boo1ean/mgrt",
 	"homepage": "https://github.com/boo1ean/mgrt",
@@ -19,16 +19,16 @@
 	"author": "Egor Gumenyuk <boo1ean0807@gmail.com>",
 	"license": "MIT",
 	"devDependencies": {
-		"mocha": "~1.17.0"
+		"mocha": "~1.17.0",
+		"chai": "~1.8.1",
+		"sinon": "~1.7.3",
+		"sinon-chai": "~2.4.0"
 	},
 	"dependencies": {
 		"mgrt-file-storage": "0.1.0",
 		"mgrt-migrations": "~0.1.0",
 		"commander": "~2.1.0",
 		"mkdirp": "~0.3.5",
-		"colors": "~0.6.2",
-		"chai": "~1.8.1",
-		"sinon": "~1.7.3",
-		"sinon-chai": "~2.4.0"
+		"colors": "~0.6.2"
 	}
 }
