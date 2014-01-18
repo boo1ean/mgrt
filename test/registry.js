@@ -63,17 +63,25 @@ describe('Registry', function() {
 		migrations.should.have.members(availableMigrations);
 	});
 
-	it('Should return list of pending migrations for up direction', function() {
+	it('Should yield with list of pending migrations for down direction', function() {
 		registry.getPendingMigrations('up', function(migrations) {
 			migrations.should.have.members(notCompletedMigrations);
 			migrations.should.not.have.members(completedMigrations);
 		});
 	});
 
-	it('Should return list of pending migrations for down direction', function() {
+	it('Should yield with list of pending migrations for up direction', function() {
 		registry.getPendingMigrations('down', function(migrations) {
 			migrations.should.have.members(completedMigrations);
 			migrations.should.not.have.members(notCompletedMigrations);
+		});
+	});
+
+	it('Should yield callback with available and completed migrations lists', function() {
+		registry.get(function(data) {
+			data.available.should.have.members(availableMigrations);
+			data.completed.should.have.members(completedMigrations);
+			data.completed.should.not.have.members(notCompletedMigrations);
 		});
 	});
 });
