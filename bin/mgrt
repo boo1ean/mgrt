@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 var program = require('commander'),
     Mgrt = require('../lib/mgrt'),
+    fileStorage = require('mgrt-file-storage'),
+    migrations = require('mgrt-migrations'),
     DEFAULT_PATH = 'migrations',
     DEFAULT_TEMPLATE_PATH = __dirname + '/../lib/template/default.js';
 
@@ -13,7 +15,9 @@ var mgrt = function(context) {
 		path: path
 	}
 
-	return new Mgrt(env);
+	return new Mgrt(env)
+		.use(migrations)
+		.use(fileStorage);
 }
 
 program
