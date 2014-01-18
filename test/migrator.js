@@ -1,4 +1,5 @@
 var Migrator = require('../lib/migrator'),
+	should = require('chai').should(),
     Migration = require('../lib/migration');
 
 describe('Migrator', function() {
@@ -15,7 +16,7 @@ describe('Migrator', function() {
 		migrator.up();
 		migrator.down();
 
-		completions.should.be.exactly(expectedCompletions);
+		completions.should.be.equal(expectedCompletions);
 	});
 
 	it('Should fire migrate event on migration', function() {
@@ -38,7 +39,7 @@ describe('Migrator', function() {
 		migrator.up();
 		migrator.down();
 
-		counter.should.be.exactly(expectedCount);
+		counter.should.be.equal(expectedCount);
 	});
 
 });
