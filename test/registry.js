@@ -26,13 +26,13 @@ describe('Registry', function() {
 	];
 
 	storage = {
-		get: function(cb) {
+		get: sinon.spy(function(cb) {
 			cb(JSON.stringify(completedMigrations));
-		},
+		}),
 
-		set: function(value, cb) {
+		set: sinon.spy(function(value, cb) {
 			cb(value);
-		}
+		})
 	};
 
 	env = {
@@ -83,5 +83,17 @@ describe('Registry', function() {
 			data.completed.should.have.members(completedMigrations);
 			data.completed.should.not.have.members(notCompletedMigrations);
 		});
+	});
+
+	it('Should update completed migrations for up direction', function() {
+		var spy = sinon.spy();
+		registry.updateCompletedMigrations('up', notCompletedMigrations, spy);
+		spy.should.have.been.calledWith(JSON.stringify(availableMigrations));
+	});
+
+	it('Should update completed migrations for down direction', function() {
+		var spy = sinon.spy();
+		registry.updateCompletedMigrations('down', completedMigrations, spy);
+		spy.should.have.been.calledWith('[]');
 	});
 });
