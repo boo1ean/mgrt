@@ -3,6 +3,7 @@ var program = require('commander'),
     Mgrt = require('../lib/mgrt'),
     fileStorage = require('mgrt-file-storage'),
     migrations = require('mgrt-migrations'),
+    colors = require('colors'),
     DEFAULT_PATH = 'migrations',
     DEFAULT_TEMPLATE_PATH = __dirname + '/../lib/template/default.js';
 
@@ -31,7 +32,7 @@ var mgrt = function(context) {
 		.on('migration', function(migration, direction) {
 			console.log(('Successfully ' + verbs[direction] + 'd: ').green + migration.name);
 		})
-		.on('error', function() {
+		.on('error', function(migration, direction, reason) {
 			console.log('Error occurred during migration: '.red + migration.name);
 			if (reason) {
 				console.log(reason);
