@@ -25,10 +25,17 @@ describe('Migrator', function() {
 	it('Should fire migrate event on migration', function() {
 		var title = 'such title',
 		    counter = 0,
-		    expectedCount = 10,
+		    expectedCount = 12,
 		    cb = function(next) { ++counter; next(); },
 		    migration = new Migration(title, cb, cb),
 		    migrator = new Migrator([migration, migration]);
+
+		migrator.on('start', function(direction) {
+			++counter;
+			direction.should.satisfy(function(value) {
+				return 'up' === value || 'down' === value;
+			});
+		});
 
 		migrator.on('migration', function(migration) {
 			++counter;
