@@ -1,4 +1,6 @@
 var Mgrt = require('../lib/mgrt'),
+    Registry = require('../lib/registry'),
+    Migration = require('../lib/migration'),
     chai = require('chai'),
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
@@ -67,5 +69,19 @@ describe('Mgrt facade', function() {
 		setupSpy.should.have.been.calledOnce;
 		spy.should.have.been.calledThrice;
 		spy.should.have.been.calledOn(mgrt.env);
+	});
+
+	it('Should yield registry.craete', function() {
+		var mgrt = new Mgrt({}),
+		    templatePath = 'such path',
+		    name = 'so name',
+		    nameRegex = /^\d+-so name.\js$/,
+		    spy = sinon.spy();
+
+		mgrt.initRegistry = function() { return { create: spy } };
+
+		mgrt.create(name, templatePath);
+
+		spy.should.have.been.calledWith(sinon.match(nameRegex), templatePath);
 	});
 });
