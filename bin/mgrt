@@ -4,6 +4,7 @@ var program = require('commander'),
     fileStorage = require('mgrt-file-storage'),
     migrations = require('mgrt-migrations'),
     colors = require('colors'),
+	resolve = require('path').resolve,
     DEFAULT_PATH = 'migrations',
     DEFAULT_TEMPLATE_PATH = __dirname + '/../lib/template/default.js';
 
@@ -22,7 +23,7 @@ var mgrt = function(context) {
 		down: 'reverse'
 	}
 
-	return new Mgrt(env)
+	var mgrt = new Mgrt(env)
 		.on('nop', function(direction) {
 			console.log(('Nothing to ' + verbs[direction]).red);
 		})
@@ -41,8 +42,22 @@ var mgrt = function(context) {
 		.on('create', function(migration) {
 			console.log('Successfully created migration: '.green + migration);
 		})
-		.use(migrations)
-		.use(fileStorage);
+		.use(migrations);
+
+
+		if (!context.storage) {
+			mgrt.use(fileStorage);
+		} else {
+			var storage = require(resolve(context.storage));
+
+			if (!storage || !storage.get || !storage.set) {
+				throw Error('Mgrt requires valid storage to run, please!');
+			}
+
+			mgrt.env.storage = storage;
+		}
+
+		return mgrt;
 }
 
 program
@@ -50,6 +65,7 @@ program
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.option('-f, --force', 'Force up all migrations', false)
 	.option('-n, --nosave', 'Do not save migrations data to storage')
+	.option('-s, --storage <path>', 'Use specific migrations storage')
 	.description('Apply pending migrations')
 	.action(function(context) {
 		mgrt(context)
@@ -63,6 +79,7 @@ program
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.option('-f, --force', 'Force down all migrations', false)
 	.option('-n, --nosave', 'Do not save migrations data to storage')
+	.option('-s, --storage <path>', 'Use specific migrations storage')
 	.description('Rollback applied migrations')
 	.action(function(context) {
 		mgrt(context)
@@ -76,6 +93,7 @@ program
 	.option('-p, --path <path>', 'Path to migrations base directory')
 	.option('-f, --force', 'Force down all migrations')
 	.option('-n, --nosave', 'Do not save migrations data to storage')
+	.option('-s, --storage <path>', 'Use specific migrations storage')
 	.description('Down and up migrations')
 	.action(function(context) {
 		var m = mgrt(context);
