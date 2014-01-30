@@ -70,6 +70,7 @@ program
 	.action(function(context) {
 		mgrt(context)
 			.on('complete', process.exit)
+			.on('nop', process.exit)
 			.on('error', process.exit)
 			.run('up', context);
 	});
@@ -84,6 +85,7 @@ program
 	.action(function(context) {
 		mgrt(context)
 			.on('complete', process.exit)
+			.on('nop', process.exit)
 			.on('error', process.exit)
 			.run('down', context);
 	});

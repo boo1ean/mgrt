@@ -1,6 +1,6 @@
 {
 	"name": "mgrt",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"description": "Database migration tool for node.js",
 	"repository": "boo1ean/mgrt",
 	"homepage": "https://github.com/boo1ean/mgrt",
