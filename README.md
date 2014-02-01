@@ -129,6 +129,31 @@ exports.down = function(success, error) {
 };
 ```
 
+## Store completed migrations in db
+
+You can specify custom migrations metadata storage with `--storage` option:
+
+	mgrt up --storage utils/migrations-storage.js
+
+Storage module should look like:
+
+```javascript
+var db = require('../your-db-adapter');
+
+module.exports = {
+	// Should invoke callback with data string
+	get: function(callback) {
+		db.get_data_string_async(callback); // should be invoked with data string
+	},
+
+	// Should save data string somewhere and then invoke callback
+	// You only need to store single string somewhere in db
+	set: function(data_string, callback) {
+		db.store_data_string_somewhere_async(data_string, callback);
+	}
+};
+```
+
 ## Rerun migrations
 
 If you want reverse all applied migration and migrate them back just:
