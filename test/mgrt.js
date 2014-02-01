@@ -4,9 +4,17 @@ var Mgrt = require('../lib/mgrt'),
     chai = require('chai'),
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
-    should = chai.should();
+    fs = require('fs'),
+    should = chai.should()
+    fileStorage = require('mgrt-file-storage');
 
 chai.use(sinonChai);
+
+var migrations = [
+	'1390047616649-such-migration.js',
+	'1390047623625-many-steps.js',
+	'1390047653908-so-sequential.js'
+];
 
 describe('Mgrt facade', function() {
 	it('Should add middlewares', function() {
@@ -84,4 +92,45 @@ describe('Mgrt facade', function() {
 
 		spy.should.have.been.calledWith(sinon.match(nameRegex), templatePath);
 	});
+
+	it('Should save completed migrations to storage on up fail', function(done) {
+		var path = 'test/migrations';
+		var storageFilePath = path + '/.migrations';
+
+		var mgrt = new Mgrt({
+			path: path
+		});
+
+		mgrt.on('error', function() {
+			var data = fs.readFileSync(storageFilePath);
+			var completedMigrations = JSON.parse(data);
+			completedMigrations.should.have.lengthOf(1);
+			completedMigrations[0].should.be.equal(migrations[0]);
+			fs.unlink(storageFilePath, done);
+		});
+
+		mgrt.use(fileStorage).run('up');
+	})
+
+	it('Should save completed migrations to storage on down fail', function(done) {
+		var path = 'test/migrations';
+		var storageFilePath = path + '/.migrations';
+
+		var mgrt = new Mgrt({
+			path: path
+		});
+
+		fs.writeFileSync(storageFilePath, JSON.stringify(migrations));
+
+		mgrt.on('error', function() {
+			var data = fs.readFileSync(storageFilePath);
+			var completedMigrations = JSON.parse(data);
+			completedMigrations.should.have.lengthOf(2);
+			completedMigrations[0].should.be.equal(migrations[0]);
+			completedMigrations[1].should.be.equal(migrations[1]);
+			fs.unlink(storageFilePath, done);
+		});
+
+		mgrt.use(fileStorage).run('down');
+	})
 });

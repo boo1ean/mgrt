@@ -1,7 +1,7 @@
 exports.up = function(success, error) {
-	error('Please populate migration');
+	error('Caught you!');
 };
 
 exports.down = function(success, error) {
-	error('Please populate migration');
+	error('Caught you!');
 };
