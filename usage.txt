@@ -1,0 +1,13 @@
+Usage: mgrt [options] [command]
+
+Commands:
+
+  up      [options]        Apply pending migrations
+  down    [options]        Rollback applied migrations
+  refresh [options]        Down and up migrations
+  create  [options] <name> Create new migration
+
+Options:
+
+  -h, --help     output usage information
+  -V, --version  output the version number

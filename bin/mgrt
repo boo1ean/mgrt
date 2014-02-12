@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-var program = require('commander'),
-    Mgrt = require('../lib/mgrt'),
+var Mgrt = require('../lib/mgrt'),
+    realist = require('realist'),
     fileStorage = require('mgrt-file-storage'),
     migrations = require('mgrt-migrations'),
     colors = require('colors'),
-	resolve = require('path').resolve,
-    DEFAULT_PATH = 'migrations',
-    DEFAULT_TEMPLATE_PATH = __dirname + '/../lib/template/default.js';
+    read = require('fs').readFileSync,
+	resolve = require('path').resolve;
 
-program
-	.version(require('../package').version);
+var DEFAULT_PATH = 'migrations',
+    DEFAULT_TEMPLATE_PATH = __dirname + '/../lib/template/default.js',
+    USAGE = read(__dirname + '/../usage.txt').toString();
 
 var mgrt = function(context) {
 	var path = context.path || DEFAULT_PATH;
@@ -60,50 +60,36 @@ var mgrt = function(context) {
 		return mgrt;
 }
 
-program
-	.command('up')
-	.option('-p, --path <path>', 'Path to migrations base directory')
-	.option('-f, --force', 'Force up all migrations', false)
-	.option('-n, --nosave', 'Do not save migrations data to storage')
-	.option('-s, --storage <path>', 'Use specific migrations storage')
-	.description('Apply pending migrations')
-	.action(function(context) {
-		mgrt(context)
+var options = {
+	template: ['t', 'template'],
+	storage:  ['s', 'storage'],
+	nosave:   ['n', 'nosave'],
+	force:    ['f', 'force'],
+	path:     ['p', 'path']
+};
+
+var migrate = function(direction) {
+	return function(opt, steps) {
+		mgrt(opt)
 			.on('complete', process.exit)
 			.on('nop', process.exit)
 			.on('error', process.exit)
-			.run('up', context);
-	});
+			.run(direction, opt);
+	};
+};
 
-program
-	.command('down')
-	.option('-p, --path <path>', 'Path to migrations base directory')
-	.option('-f, --force', 'Force down all migrations', false)
-	.option('-n, --nosave', 'Do not save migrations data to storage')
-	.option('-s, --storage <path>', 'Use specific migrations storage')
-	.description('Rollback applied migrations')
-	.action(function(context) {
-		mgrt(context)
-			.on('complete', process.exit)
-			.on('nop', process.exit)
-			.on('error', process.exit)
-			.run('down', context);
-	});
+var commands = {
+	'up [steps]': migrate('up'),
 
-program
-	.command('refresh')
-	.option('-p, --path <path>', 'Path to migrations base directory')
-	.option('-f, --force', 'Force down all migrations')
-	.option('-n, --nosave', 'Do not save migrations data to storage')
-	.option('-s, --storage <path>', 'Use specific migrations storage')
-	.description('Down and up migrations')
-	.action(function(context) {
-		var m = mgrt(context);
+	'down [steps]': migrate('down'),
+
+	'refresh': function(opt) {
+		var m = mgrt(opt);
 
 		var up = function(direction) {
 			if ('down' === direction) {
 				console.log('\n---\n');
-				m.run('up', context);
+				m.run('up', opt);
 			} else {
 				process.exit();
 			}
@@ -113,23 +99,25 @@ program
 		m.on('complete', up);
 		m.on('nop', up);
 
-		m.run('down', context);
-	});
+		m.run('down', opt);
+	},
 
-program
-	.command('create <name>')
-	.option('-p, --path <path>', 'Path to migrations base directory')
-	.option('-t, --template <path>', 'Path to migration template')
-	.description('Create new migration')
-	.action(function(name, context) {
+	'create <migration-name>': function(opt, name) {
 		if ('string' === typeof name && name.length) {
-			var templatePath = context.template || DEFAULT_TEMPLATE_PATH;
-			mgrt(context).create(name, templatePath);
+			var templatePath = opt.template || DEFAULT_TEMPLATE_PATH;
+			mgrt(opt).create(name, templatePath);
 		}
-	});
+	}
+};
 
-program.parse(process.argv);
+var usage = function(app) {
+	console.log(USAGE);
+	app.stop();
+};
 
-if (!program.args.length) {
-	program.help();
-}
+events = {
+	'help': usage,
+	'default': usage
+};
+
+realist(commands, options, events);
