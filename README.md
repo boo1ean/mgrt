@@ -9,19 +9,19 @@ Database migration tool for node.js
 ## Usage
 
 ```
-  Usage: mgrt [options] [command]
+Usage: mgrt <command> [options]
 
-  Commands:
+Commands:
 
-    up      [options]        Apply pending migrations
-    down    [options]        Rollback applied migrations
-    refresh [options]        Down and up migrations
-    create  [options] <name> Create new migration
+  up        [steps]            Apply pending migrations
+  down      [steps]            Rollback applied migrations
+  refresh                      Down and up migrations
+  create    <migration-name>   Create new migration
 
-  Options:
+Options:
 
-    -h, --help     output usage information
-    -V, --version  output the version number
+  -h, --help     output this message
+  -v, --version  output the version number
 ```
 
 ## Create Migration

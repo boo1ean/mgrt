@@ -5,7 +5,7 @@ var Mgrt = require('../lib/mgrt'),
     migrations = require('mgrt-migrations'),
     colors = require('colors'),
     read = require('fs').readFileSync,
-	resolve = require('path').resolve;
+    resolve = require('path').resolve;
 
 var DEFAULT_PATH = 'migrations',
     DEFAULT_TEMPLATE_PATH = __dirname + '/../lib/template/default.js',
@@ -45,19 +45,19 @@ var mgrt = function(context) {
 		.use(migrations);
 
 
-		if (!context.storage) {
-			mgrt.use(fileStorage);
-		} else {
-			var storage = require(resolve(context.storage));
+	if (!context.storage) {
+		mgrt.use(fileStorage);
+	} else {
+		var storage = require(resolve(context.storage));
 
-			if (!storage || !storage.get || !storage.set) {
-				throw Error('Mgrt requires valid storage to run, please!');
-			}
-
-			mgrt.env.storage = storage;
+		if (!storage || !storage.get || !storage.set) {
+			throw Error('Mgrt requires valid storage to run, please!');
 		}
 
-		return mgrt;
+		mgrt.env.storage = storage;
+	}
+
+	return mgrt;
 }
 
 var options = {
