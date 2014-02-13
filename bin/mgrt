@@ -115,9 +115,15 @@ var usage = function(app) {
 	app.stop();
 };
 
+var version = function(app) {
+	console.log(require('../package.json').version);
+	app.stop();
+};
+
 events = {
-	'help': usage,
-	'default': usage
+	'default': usage,
+	'option help': usage,
+	'option version': version
 };
 
 realist(commands, options, events);
