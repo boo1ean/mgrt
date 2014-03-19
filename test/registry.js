@@ -71,16 +71,16 @@ describe('Registry', function() {
 	});
 
 	it('Should yield with list of pending migrations for down direction', function() {
-		registry.getPendingMigrations('up', function(migrations) {
-			migrations.should.have.members(notCompletedMigrations);
-			migrations.should.not.have.members(completedMigrations);
+		registry.getPendingMigrations('down', function(migrations) {
+			migrations.should.have.members(completedMigrations);
+			migrations.should.not.have.members(notCompletedMigrations);
 		});
 	});
 
 	it('Should yield with list of pending migrations for up direction', function() {
-		registry.getPendingMigrations('down', function(migrations) {
-			migrations.should.have.members(completedMigrations);
-			migrations.should.not.have.members(notCompletedMigrations);
+		registry.getPendingMigrations('up', function(migrations) {
+			migrations.should.have.members(availableMigrations);
+			migrations.should.not.have.members(completedMigrations);
 		});
 	});
 
