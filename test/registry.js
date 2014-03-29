@@ -79,7 +79,7 @@ describe('Registry', function() {
 
 	it('Should yield with list of pending migrations for up direction', function() {
 		registry.getPendingMigrations('up', function(migrations) {
-			migrations.should.have.members(availableMigrations);
+			migrations.should.have.members(notCompletedMigrations);
 			migrations.should.not.have.members(completedMigrations);
 		});
 	});
