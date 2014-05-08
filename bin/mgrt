@@ -127,3 +127,9 @@ events = {
 };
 
 realist(commands, options, events);
+
+process.on('uncaughtException', function (error) {
+	console.log('Uncaught exception!'.red);
+	console.log(error && error.stack || error);
+	process.exit();
+});
