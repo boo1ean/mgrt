@@ -79,7 +79,7 @@ describe('Mgrt facade', function() {
 		spy.should.have.been.calledOn(mgrt.env);
 	});
 
-	it('Should yield registry.craete', function() {
+	it('Should yield registry.create', function() {
 		var mgrt = new Mgrt({}),
 		    templatePath = 'such path',
 		    name = 'so name',
