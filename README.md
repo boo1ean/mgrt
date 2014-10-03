@@ -164,6 +164,11 @@ If you want reverse all applied migration and migrate them back just:
 
 	mgrt up --force --nosave
 
+## Using custom temlpates
+
+You can place file ```template.js``` into ```migrations``` folder and it will be 
+used instead of the default one.
+
 # Soon...
 - Custom migration templates
 - Configuration
