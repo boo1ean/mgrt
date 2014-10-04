@@ -137,7 +137,7 @@ describe('Mgrt facade', function() {
 		mgrt.use(fileStorage).run('down');
 	})
 
-	it('Should use template.js if present', function(){
+	it('Should use template.js if present', function() {
 		var path = 'test/migrations';
 		var templatePath = 'test/migrations/template.js';
 		var migrationPath;
@@ -147,7 +147,7 @@ describe('Mgrt facade', function() {
 
 		fs.writeFileSync(templatePath, '{}');
 
-		mgrt.on('create', function(mgrtion){
+		mgrt.on('create', function(mgrtion) {
 			migrationPath = mgrtion;
 		});
 
