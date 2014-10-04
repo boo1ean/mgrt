@@ -80,7 +80,10 @@ describe('Mgrt facade', function() {
 	});
 
 	it('Should yield registry.create', function() {
-		var mgrt = new Mgrt({}),
+		var path = 'test/migrations';
+		var mgrt = new Mgrt({
+			path: path
+		}),
 		    templatePath = 'such path',
 		    name = 'so name',
 		    nameRegex = /^\d+-so name.\js$/,
@@ -133,4 +136,26 @@ describe('Mgrt facade', function() {
 
 		mgrt.use(fileStorage).run('down');
 	})
+
+	it('Should use template.js if present', function() {
+		var path = 'test/migrations';
+		var templatePath = 'test/migrations/template.js';
+		var migrationPath;
+		var mgrt = new Mgrt({
+			path: path
+		});
+
+		fs.writeFileSync(templatePath, '{}');
+
+		mgrt.on('create', function(mgrtion) {
+			migrationPath = mgrtion;
+		});
+
+		mgrt.create('very_name');
+
+		fs.unlinkSync(templatePath);
+		var content = fs.readFileSync(migrationPath);
+		fs.unlinkSync(migrationPath);
+		String(content).should.be.equal('{}');
+	});
 });
