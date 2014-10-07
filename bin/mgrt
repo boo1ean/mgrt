@@ -68,28 +68,30 @@ var options = {
 	path:     ['p', 'path']
 };
 
-var migrate = function(direction) {
-	return function(opt, steps) {
-		mgrt(opt)
+var migrate = function(direction, opts, steps) {
+		mgrt(opts)
 			.on('complete', process.exit)
 			.on('nop', process.exit)
 			.on('error', process.exit)
-			.run(direction, opt);
+			.run(direction, opts, steps);
 	};
-};
 
 var commands = {
-	'up [steps]': migrate('up'),
+	'up [steps]': function(opts, steps) {
+		migrate('up', opts, steps);
+	},
 
-	'down [steps]': migrate('down'),
+	'down [steps]': function(opts, steps) {
+		migrate('down', opts, steps);
+	},
 
-	'refresh': function(opt) {
-		var m = mgrt(opt);
+	'refresh': function(opts, steps) {
+		var m = mgrt(opts);
 
 		var up = function(direction) {
 			if ('down' === direction) {
 				console.log('\n---\n');
-				m.run('up', opt);
+				m.run('up', opts, steps);
 			} else {
 				process.exit();
 			}
@@ -99,13 +101,13 @@ var commands = {
 		m.on('complete', up);
 		m.on('nop', up);
 
-		m.run('down', opt);
+		m.run('down', opts, steps);
 	},
 
-	'create <migration-name>': function(opt, name) {
+	'create <migration-name>': function(opts, name) {
 		if ('string' === typeof name && name.length) {
-			var templatePath = opt.template || DEFAULT_TEMPLATE_PATH;
-			mgrt(opt).create(name, templatePath);
+			var templatePath = opts.template || DEFAULT_TEMPLATE_PATH;
+			mgrt(opts).create(name, templatePath);
 		}
 	}
 };
