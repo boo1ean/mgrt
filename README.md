@@ -1,4 +1,5 @@
 # mgrt [![Build Status](https://travis-ci.org/boo1ean/mgrt.png?branch=master)](https://travis-ci.org/boo1ean/mgrt)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/boo1ean/mgrt?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Database migration tool for node.js
 
